@@ -10,28 +10,38 @@
 
 <script>
 var app = angular.module("ngfireFlashCardApp", ["firebase"]);
+// We now have $firebaseObject, $firebaseArray and $firebaseAuth  services available to other services
 
-app.controller("ngfireFlashCardController", function($scope, $firebaseArray) {// fb[obj | array | Auth]
-  $scope.newQuestion ='what?'
-  $scope.newAnswer ='42'
-console.log('Firease loaded:' + $firebaseArray)
+app.controller("ngfireFlashCardController", function($scope, $firebaseArray) {
+  // These are the available services: $firebaseObject | $firebaseArray | $firebaseAuth]
+
+  //$scope.newQuestion ='what?'
+  //$scope.newAnswer ='42a'
 
   var fbRef = new Firebase("https://photondynamics.firebaseio.com/");
-  /*
-  Single item
-  $scope.data = $firebaseObject(fbRef); // download the data into a local object
 
-???
-  var syncObject = $firebaseObject(ref); // Another way of doing things
-  syncObject.$bindTo($scope, "data");
-*/
-$scope.questions = $firebaseArray(fbRef);
+  //var syncObject = $firebaseObject(fbRef); // Use Objects
+  //syncObject.$bindTo($scope, "data");
 
+  $scope.questions = $firebaseArray(fbRef);
+  // Because we are hooked up to fb and need to sync,
+  // Normal array methods like .push or .splice()
+  // Instead use the firebase methods:
+  // .$add()
+  // .$save()
+  // .$remove()
+
+
+  // Warning: if you check data in firebase, MAKE SURE IT IS AT THE RIGHT LEVEL!
+  // Drilling down into an object may give the appearance that it is the ONLY object!
+  // This is easy to do because a single click on a doc is enough
+  // The solutio is to click on the "+" NOT THE ID
   $scope.addFlashCard = function() {// How to add a flashcard
     $scope.questions.$add({
       question: $scope.newQuestion,
       answer: $scope.newAnswer
     })
+    console.log('Done for now')
   }
   // putting a console.log here won't work, see below
 });
