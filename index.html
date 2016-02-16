@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Todo w/ng and firebase</title>
+  <!-- AngularJS -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+<script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
+<script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
+
+<script>
+var app = angular.module("ngfireFlashCardApp", ["firebase"]);
+
+app.controller("ngfireFlashCardController", function($scope, $firebaseArray) {// fb[obj | array | Auth]
+  $scope.newQuestion ='what?'
+  $scope.newAnswer ='42'
+console.log('Firease loaded:' + $firebaseArray)
+
+  var fbRef = new Firebase("https://photondynamics.firebaseio.com/");
+  /*
+  Single item
+  $scope.data = $firebaseObject(fbRef); // download the data into a local object
+
+???
+  var syncObject = $firebaseObject(ref); // Another way of doing things
+  syncObject.$bindTo($scope, "data");
+*/
+$scope.questions = $firebaseArray(fbRef);
+
+  $scope.addFlashCard = function() {// How to add a flashcard
+    $scope.questions.$add({
+      question: $scope.newQuestion,
+      answer: $scope.newAnswer
+    })
+  }
+  // putting a console.log here won't work, see below
+});
+</script>
+</head>
+<body ng-app='ngfireFlashCardApp'>
+<div ng-controller='ngfireFlashCardController'>
+Flash card list
+
+Add flash card
+  Question: <input type="text" ng-model='newQuestion'><br>
+  Answer: <input type="text" ng-model='newAnswer'>
+  <button ng-click='addFlashCard()'>Add flash card</button>
+
+</div>
+</body>
+</html>
